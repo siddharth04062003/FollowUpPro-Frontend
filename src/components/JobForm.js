@@ -49,15 +49,23 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.resume) {
       setFileError('Resume is required. Please upload your resume.');
       return;
     }
     setFileError("");
-    onSubmit(form);
-    setForm(initialState);
+    try {
+      await onSubmit(form);
+      setForm(initialState);
+      // Optionally, reset file input manually if needed
+      if (document.getElementById('resume-input')) {
+        document.getElementById('resume-input').value = '';
+      }
+    } catch (err) {
+      // error handled by parent
+    }
   };
 
 
@@ -97,7 +105,7 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
       <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Notes" className="w-full mb-4 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-700 transition placeholder-gray-400 px-4 py-2 font-medium shadow-sm" />
       <div className="mb-4">
         <label className="block mb-1 font-semibold text-gray-300">Resume (PDF, DOCX, etc.) <span className="text-xs text-gray-400">(Max 500KB)</span></label>
-        <input type="file" name="resume" accept=".pdf,.doc,.docx" onChange={handleChange} className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-blue-300 hover:file:bg-blue-800 transition-all duration-200" />
+        <input id="resume-input" type="file" name="resume" accept=".pdf,.doc,.docx" onChange={handleChange} className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-blue-300 hover:file:bg-blue-800 transition-all duration-200" />
         {fileError && <div className="text-red-500 text-xs mt-1 font-semibold">{fileError} <a href='https://www.ilovepdf.com/compress_pdf' target='_blank' rel='noopener noreferrer' className='underline hover:text-blue-400'>Compress here</a></div>}
       </div>
       <div className="flex gap-4 mt-6">
