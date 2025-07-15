@@ -5,7 +5,7 @@ import StatusDropdown from './StatusDropdown';
 const initialState = {
   company: '',
   role: '',
-  status: '',
+  status: 'Applied', // Set default status
   appliedDate: '',
   followUpDate: '',
   notes: '',
@@ -22,7 +22,7 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
       setForm({
         company: editingJob.company || '',
         role: editingJob.role || '',
-        status: editingJob.status || '',
+        status: editingJob.status || 'Applied', // Default to 'Applied' if missing
         appliedDate: editingJob.appliedDate ? editingJob.appliedDate.slice(0,10) : '',
         followUpDate: editingJob.followUpDate ? editingJob.followUpDate.slice(0,10) : '',
         notes: editingJob.notes || '',
