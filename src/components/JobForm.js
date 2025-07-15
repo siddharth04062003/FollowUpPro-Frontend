@@ -51,6 +51,11 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.resume) {
+      setFileError('Resume is required. Please upload your resume.');
+      return;
+    }
+    setFileError("");
     onSubmit(form);
     setForm(initialState);
   };

@@ -61,13 +61,20 @@ const Dashboard = () => {
 
   const handleAddOrEdit = async (jobData) => {
     try {
+      // Convert jobData to FormData for file upload
+      const formData = new FormData();
+      Object.entries(jobData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formData.append(key, value);
+        }
+      });
       if (editingJob) {
-        await api.put(`/jobs/${editingJob._id}`, jobData, {
+        await api.put(`/jobs/${editingJob._id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         setEditingJob(null);
       } else {
-        await api.post('/jobs', jobData, {
+        await api.post('/jobs', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
