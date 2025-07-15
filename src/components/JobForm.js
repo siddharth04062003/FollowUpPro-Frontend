@@ -1,28 +1,26 @@
-
 import React, { useState, useEffect } from 'react';
 import StatusDropdown from './StatusDropdown';
 
 const initialState = {
   company: '',
   role: '',
-  status: 'Applied', // Set default status
+  status: 'Applied', // Valid default
   appliedDate: '',
   followUpDate: '',
   notes: '',
-  resume: null
+  resume: null 
 };
 
 const JobForm = ({ onSubmit, editingJob, onCancel }) => {
   const [fileError, setFileError] = useState("");
   const [form, setForm] = useState(initialState);
 
-
   useEffect(() => {
     if (editingJob) {
       setForm({
         company: editingJob.company || '',
         role: editingJob.role || '',
-        status: editingJob.status || 'Applied', // Default to 'Applied' if missing
+        status: editingJob.status || 'Applied',
         appliedDate: editingJob.appliedDate ? editingJob.appliedDate.slice(0,10) : '',
         followUpDate: editingJob.followUpDate ? editingJob.followUpDate.slice(0,10) : '',
         notes: editingJob.notes || '',
@@ -37,7 +35,7 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
     const { name, value, files } = e.target;
     if (name === 'resume') {
       const file = files[0];
-      if (file && file.size > 512000) { // 500KB = 512000 bytes
+      if (file && file.size > 512000) { // 500KB
         setFileError("File too large. Please compress your resume to under 500KB before uploading.");
         setForm(f => ({ ...f, resume: null }));
       } else {
@@ -56,18 +54,25 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
       return;
     }
     setFileError("");
+
     try {
-      await onSubmit(form);
+      const formData = new FormData();
+      for (const key in form) {
+        if (form[key]) {
+          formData.append(key, form[key]);
+        }
+      }
+
+      await onSubmit(formData); // Call parent with FormData
+
       setForm(initialState);
-      // Optionally, reset file input manually if needed
       if (document.getElementById('resume-input')) {
         document.getElementById('resume-input').value = '';
       }
     } catch (err) {
-      // error handled by parent
+      // Error handled by parent
     }
   };
-
 
   return (
     <form
@@ -116,6 +121,6 @@ const JobForm = ({ onSubmit, editingJob, onCancel }) => {
       </div>
     </form>
   );
-}
+};
 
 export default JobForm;

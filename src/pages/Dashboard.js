@@ -3,23 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api'; // Use your axios instance with JWT
 import JobForm from '../components/JobForm';
 import FilterBar from '../components/FilterBar';
-
 import JobTable from '../components/JobTable';
 import SidebarStats from '../components/SidebarStats';
-
 import UserInfo from '../components/UserInfo';
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
-
-
-  // --- HOOKS AND LOGIC ---
   const [jobs, setJobs] = useState([]);
   const [filter, setFilter] = useState({ status: '', date: '' });
   const [editingJob, setEditingJob] = useState(null);
-
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,7 +21,6 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    // Fetch user profile
     const fetchUser = async () => {
       try {
         const res = await api.get('/auth/profile');
@@ -59,15 +52,9 @@ const Dashboard = () => {
     // eslint-disable-next-line
   }, []);
 
-  const handleAddOrEdit = async (jobData) => {
+  const handleAddOrEdit = async (formData) => {
     try {
-      // Convert jobData to FormData for file upload
-      const formData = new FormData();
-      Object.entries(jobData).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          formData.append(key, value);
-        }
-      });
+      // No need to recreate FormData — it’s already coming from JobForm
       if (editingJob) {
         await api.put(`/jobs/${editingJob._id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
@@ -83,6 +70,8 @@ const Dashboard = () => {
       if (err.response && err.response.status === 401) {
         localStorage.removeItem('token');
         navigate('/login');
+      } else {
+        console.error("Error submitting job:", err);
       }
     }
   };
@@ -104,19 +93,14 @@ const Dashboard = () => {
   };
 
   const filteredJobs = jobs.filter(job => {
-    let statusMatch = filter.status ? job.status === filter.status : true;
-    let dateMatch = filter.date ? job.appliedDate && job.appliedDate.startsWith(filter.date) : true;
+    const statusMatch = filter.status ? job.status === filter.status : true;
+    const dateMatch = filter.date ? job.appliedDate && job.appliedDate.startsWith(filter.date) : true;
     return statusMatch && dateMatch;
   });
 
-
   const handleUserUpdate = (updatedUser) => {
-    // TODO: Implement user update API call
-    // For now, just update local state
     setUser(prev => ({ ...prev, ...updatedUser }));
   };
-
-  // --- SINGLE RETURN ---
 
   if (!user) {
     return <div className="min-h-screen flex items-center justify-center text-gray-200 text-xl">Loading...</div>;
@@ -132,7 +116,7 @@ const Dashboard = () => {
               src={user.profilePhoto
                 ? (user.profilePhoto.startsWith('http')
                     ? user.profilePhoto
-                    : `${process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api','') : 'http://localhost:5000'}/${user.profilePhoto}`)
+                    : `${process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000'}/${user.profilePhoto}`)
                 : 'https://unavatar.io/github/ghost'}
               alt={user.name}
               className="w-10 h-10 rounded-full border-2 border-blue-500 shadow object-cover ring-2 ring-blue-400 group-hover:ring-4 transition-all duration-200"
@@ -142,7 +126,9 @@ const Dashboard = () => {
               {user.name} {user.role && <span className="text-blue-300">({user.role})</span>}
             </span>
           </div>
-          <span className="text-lg md:text-2xl font-extrabold text-gray-100 font-mono tracking-wide animate-fade-in">Hello <span className="text-blue-400">{user.name.split(' ')[0]}</span>!</span>
+          <span className="text-lg md:text-2xl font-extrabold text-gray-100 font-mono tracking-wide animate-fade-in">
+            Hello <span className="text-blue-400">{user.name.split(' ')[0]}</span>!
+          </span>
         </div>
         <div className="flex items-center gap-4">
           <span className="hidden md:block text-xs text-gray-500 font-semibold tracking-widest uppercase">Welcome to your Dashboard</span>
@@ -157,7 +143,10 @@ const Dashboard = () => {
           </button>
         </div>
       </header>
+
+      {/* Main Content */}
       <div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
+        {/* Sidebar */}
         <div className="flex flex-col gap-6 md:w-80">
           <UserInfo user={{
             name: user.name,
@@ -168,15 +157,21 @@ const Dashboard = () => {
             photo: user.profilePhoto
               ? (user.profilePhoto.startsWith('http')
                   ? user.profilePhoto
-                  : `${process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api','') : 'http://localhost:5000'}/${user.profilePhoto}`)
+                  : `${process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000'}/${user.profilePhoto}`)
               : 'https://unavatar.io/github/ghost',
           }} onUpdate={handleUserUpdate} />
           <SidebarStats jobs={jobs} />
         </div>
+
+        {/* Job Management */}
         <div className="flex-1 bg-gray-900/90 rounded-2xl shadow-2xl p-8 border border-gray-800">
           <h1 className="text-4xl font-extrabold mb-8 text-gray-100 text-center drop-shadow">Job Application Tracker</h1>
           <div className="mb-8">
-            <JobForm onSubmit={handleAddOrEdit} editingJob={editingJob} onCancel={() => setEditingJob(null)} />
+            <JobForm
+              onSubmit={handleAddOrEdit}
+              editingJob={editingJob}
+              onCancel={() => setEditingJob(null)}
+            />
           </div>
           <div className="mb-8">
             <FilterBar filter={filter} setFilter={setFilter} />
