@@ -9,7 +9,10 @@ import {
   BarChart3, 
   Filter,
   Mail,
-  Bell
+  Bell,
+  LogIn,
+  UserPlus,
+  Shield
 } from 'lucide-react';
 
 const Landing = () => {
@@ -46,6 +49,22 @@ const Landing = () => {
     }
   ];
 
+  const handleLogin = () => {
+    window.location.href = '/login';
+  };
+
+  const handleSignUp = () => {
+    window.location.href = '/register';
+  };
+
+  const handleAdminLogin = () => {
+    window.location.href = '/admin';
+  };
+
+  const handleGetStarted = () => {
+    window.location.href = '/register';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       {/* Hero Section */}
@@ -61,13 +80,25 @@ const Landing = () => {
           
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button className="px-8 py-3 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg shadow-lg transition transform hover:scale-105">
+            <button 
+              onClick={handleLogin}
+              className="flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg shadow-lg transition transform hover:scale-105 cursor-pointer"
+            >
+              <LogIn className="w-5 h-5" />
               Login
             </button>
-            <button className="px-8 py-3 rounded-lg bg-gray-800 border border-blue-700 hover:bg-gray-700 text-blue-400 font-semibold text-lg shadow-lg transition transform hover:scale-105">
+            <button 
+              onClick={handleSignUp}
+              className="flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-gray-800 border border-blue-700 hover:bg-gray-700 text-blue-400 font-semibold text-lg shadow-lg transition transform hover:scale-105 cursor-pointer"
+            >
+              <UserPlus className="w-5 h-5" />
               Sign Up
             </button>
-            <button className="px-8 py-3 rounded-lg bg-yellow-600 hover:bg-yellow-700 text-white font-semibold text-lg shadow-lg transition transform hover:scale-105">
+            <button 
+              onClick={handleAdminLogin}
+              className="flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-yellow-600 hover:bg-yellow-700 text-white font-semibold text-lg shadow-lg transition transform hover:scale-105 cursor-pointer"
+            >
+              <Shield className="w-5 h-5" />
               Admin Login
             </button>
           </div>
@@ -131,7 +162,10 @@ const Landing = () => {
             <p className="text-gray-300 mb-4">
               Join thousands of job seekers who are staying organized and landing their dream jobs.
             </p>
-            <button className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition transform hover:scale-105 shadow-lg">
+            <button 
+              onClick={handleGetStarted}
+              className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition transform hover:scale-105 shadow-lg cursor-pointer"
+            >
               Get Started Free
               <PlusCircle className="ml-2 w-5 h-5" />
             </button>
