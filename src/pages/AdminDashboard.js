@@ -5,7 +5,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 // Fixed API_URL with fallback
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = 'https://followuppro-backend.onrender.com/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const AdminDashboard = () => {
     
     try {
       const res = await axios.post(`${API_URL}/admin/login`, login, {
-        timeout: 10000, // 10 second timeout
+        timeout: 15000, // 10 second timeout
       });
       setToken(res.data.token);
       localStorage.setItem('adminToken', res.data.token);
