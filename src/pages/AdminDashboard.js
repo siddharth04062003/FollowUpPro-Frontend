@@ -22,7 +22,7 @@ const AdminDashboard = () => {
     
     try {
       const res = await axios.post(`${API_URL}/admin/login`, login, {
-        timeout: 15000, // 10 second timeout
+        //timeout: 15000, // 10 second timeout
       });
       setToken(res.data.token);
       localStorage.setItem('adminToken', res.data.token);
