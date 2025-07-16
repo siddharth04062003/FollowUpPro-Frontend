@@ -5,7 +5,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 // Fixed API_URL with fallback
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
